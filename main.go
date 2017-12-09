@@ -54,7 +54,6 @@ func watchMagic(target string) {
 
 func watchMembers(target string) {
 	lastMemberAmount := -1
-	connectionOk := false
 	for {
 		cli, err := clientv3.New(clientv3.Config{
 			Endpoints:   []string{target},
