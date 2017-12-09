@@ -12,7 +12,7 @@ spec:
       containers:
       - name: post-install-job
         image: "huszty/etcd_healthchecker:latest"
-        args: ["bootstrap"]
+        args: ["/main", "bootstrap"]
         env:
         - name: ETCD_ENDPOINT
           value: {{ .Values.cluster_name }}:2379
