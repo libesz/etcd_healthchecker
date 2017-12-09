@@ -33,7 +33,7 @@ func main() {
 				lastMemberAmount = len(resp.Members)
 				memberList := ""
 				for _, element := range resp.Members {
-					memberList += element.Name
+					memberList += element.GetName()
 					memberList += ", "
 				}
 				log.Println("Memberlist changed:", memberList)
