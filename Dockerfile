@@ -9,5 +9,5 @@ RUN apk add --no-cache go git libc-dev; \
     mv main /; \
     apk del go git libc-dev;
 
-ENTRYPOINT /main
+CMD ["/main"]
 
