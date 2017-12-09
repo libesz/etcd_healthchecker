@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Simple Etcd healthchecker program and Etcd cluster. It requires etcd-operator to be already deployed in the k8s cluster.
+name: etcd-healthcheck
+version: 0.1.0
