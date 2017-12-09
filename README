@@ -1,0 +1,24 @@
+Demo Etcd + Helm project
+
+A working kubernetes cluster is assumed with:
+- kubedns or other service discovery
+- etcd operator with the custom resource registration
+
+The Chart in the chart/ directory will deploy:
+- an etcd cluster, using the operator
+- an example application which
+  - monitors the etcd cluster size
+  - and watches a key in the db
+- a post-install hook which writes the watched key as a bootstrap trigger
+
+Chart parameters:
+- cluster_name, used to name the etcd cluster and also the app pod
+- cluster_size, for the etcd cluster
+
+Usage:
+- Install a Release with specific values:
+  helm install chart/ --name meetup --set cluster_size=5 --set cluster_name=meetup
+- Upgrade e.g. to change db cluster size
+  helm upgrade meetup chart/ --reuse-values --set cluster_size=3
+- Delete the Release
+  helm delete meetup --purge
