@@ -29,13 +29,8 @@ func main() {
 				log.Println("Failed to get memberlist")
 			}
 			if lastMemberAmount != len(resp.Members) {
+				log.Println("Member amount changed to:", len(resp.Members))
 				lastMemberAmount = len(resp.Members)
-				memberList := ""
-				for _, element := range resp.Members {
-					memberList += element.GetName()
-					memberList += ", "
-				}
-				log.Println("Memberlist changed:", memberList)
 			}
 			cli.Close()
 		}
