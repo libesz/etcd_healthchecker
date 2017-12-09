@@ -9,12 +9,48 @@ import (
 	"github.com/coreos/etcd/clientv3"
 )
 
-func main() {
-	target := os.Getenv("ETCD_ENDPOINT")
-	if target == "" {
-		log.Fatalf("ETCD_ENDPOINT is not set!")
+func bootstrap(target string) {
+	for {
+		cli, err := clientv3.New(clientv3.Config{
+			Endpoints:   []string{target},
+			DialTimeout: 1 * time.Second,
+		})
+		if err != nil {
+			log.Println("Connection failed to", target)
+			time.Sleep(time.Second)
+			continue
+		} else {
+			//cli.Delete(context.Background(), "magic")
+			cli.Put(context.Background(), "magic", "42")
+			cli.Close()
+			break
+		}
 	}
-	log.Println("Etcd healthchecker started up! ETCD_ENDPOINT:", target)
+}
+
+func watchMagic(target string) {
+	for {
+		cli, err := clientv3.New(clientv3.Config{
+			Endpoints:   []string{target},
+			DialTimeout: 1 * time.Second,
+		})
+		if err != nil {
+			log.Println("Connection failed to", target)
+			time.Sleep(time.Second)
+			continue
+		} else {
+			rch := cli.Watch(context.Background(), "magic")
+			for wresp := range rch {
+				for _, ev := range wresp.Events {
+					log.Printf("%s %q : %q\n", ev.Type, ev.Kv.Key, ev.Kv.Value)
+				}
+			}
+			cli.Close()
+		}
+	}
+}
+
+func watchMembers(target string) {
 	lastMemberAmount := -1
 	for {
 		cli, err := clientv3.New(clientv3.Config{
@@ -33,7 +69,22 @@ func main() {
 				lastMemberAmount = len(resp.Members)
 			}
 			cli.Close()
+			time.Sleep(time.Second)
 		}
-		time.Sleep(time.Second)
 	}
+}
+
+func main() {
+	target := os.Getenv("ETCD_ENDPOINT")
+	if target == "" {
+		log.Fatalf("ETCD_ENDPOINT is not set!")
+	}
+	if len(os.Args) == 2 && os.Args[1] == "bootstrap" {
+		bootstrap(target)
+		os.Exit(0)
+	} else {
+		go watchMembers(target)
+	}
+	log.Println("Etcd healthchecker started up! ETCD_ENDPOINT:", target)
+	watchMagic(target)
 }
