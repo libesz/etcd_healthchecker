@@ -20,6 +20,8 @@ func bootstrap(target string) {
 			time.Sleep(time.Second)
 			continue
 		} else {
+			log.Println("Connected! Bootstrapping data...")
+			time.Sleep(10 * time.Second)
 			//cli.Delete(context.Background(), "magic")
 			cli.Put(context.Background(), "magic", "42")
 			cli.Close()
