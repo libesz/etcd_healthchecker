@@ -24,7 +24,6 @@ func main() {
 		if err != nil {
 			log.Println("Connection failed to", target)
 		} else {
-			defer cli.Close()
 			resp, err := cli.MemberList(context.Background())
 			if err != nil {
 				log.Println("Failed to get memberlist")
@@ -38,6 +37,7 @@ func main() {
 				}
 				log.Println("Memberlist changed:", memberList)
 			}
+			cli.Close()
 		}
 		time.Sleep(time.Second)
 	}
