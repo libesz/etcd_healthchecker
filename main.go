@@ -54,6 +54,7 @@ func watchMagic(target string) {
 
 func watchMembers(target string) {
 	lastMemberAmount := -1
+	connectionOk := false
 	for {
 		cli, err := clientv3.New(clientv3.Config{
 			Endpoints:   []string{target},
@@ -61,6 +62,7 @@ func watchMembers(target string) {
 		})
 		if err != nil {
 			log.Println("Connection failed to", target)
+			lastMemberAmount = -1
 		} else {
 			resp, err := cli.MemberList(context.Background())
 			if err != nil {
