@@ -30,7 +30,7 @@ func bootstrap(target string) {
 	}
 }
 
-func watchMagic(target string) {
+func work(target string) {
 	for {
 		cli, err := clientv3.New(clientv3.Config{
 			Endpoints:   []string{target},
@@ -86,8 +86,8 @@ func main() {
 		bootstrap(target)
 		os.Exit(0)
 	} else {
+		log.Println("Etcd healthchecker started up! ETCD_ENDPOINT:", target)
 		go watchMembers(target)
+		work(target)
 	}
-	log.Println("Etcd healthchecker started up! ETCD_ENDPOINT:", target)
-	watchMagic(target)
 }
